@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Settings } from "lucide-react";
+import { LayoutDashboard, Package, MessageSquare, Settings, Layout } from "lucide-react";
 
 const links = [
     { href: "/admin", label: "Dashboard", Icon: LayoutDashboard },
     { href: "/admin/products", label: "Products", Icon: Package },
-    { href: "/admin/orders", label: "Orders", Icon: ShoppingBag },
-    { href: "/admin/inquiries", label: "Inquiries", Icon: MessageSquare },
+    { href: "/admin/inquiries", label: "Enquiries", Icon: MessageSquare },
+    { href: "/admin/content", label: "Content", Icon: Layout },
     { href: "/admin/settings", label: "Settings", Icon: Settings },
 ];
 
@@ -18,10 +19,15 @@ export default function AdminSidebar() {
     return (
         <aside className="w-full lg:w-72 lg:min-h-screen bg-forest text-cream lg:sticky lg:top-0">
             <div className="px-6 py-6 border-b border-cream/10">
-                <p className="text-xs uppercase tracking-[0.22em] text-gold">BEWINGO</p>
-                <h1 className="text-xl font-bold mt-1" style={{ fontFamily: "'Playfair Display', serif" }}>
-                    Admin Panel
-                </h1>
+                <Link href="/admin">
+                    <Image
+                        src="/logo/bewingo SVG-04.svg"
+                        alt="BEWINGO Admin"
+                        width={280}
+                        height={70}
+                        className="h-16 w-auto brightness-200"
+                    />
+                </Link>
             </div>
 
             <nav className="p-4 flex lg:flex-col gap-2 overflow-x-auto">
@@ -31,9 +37,8 @@ export default function AdminSidebar() {
                         <Link
                             key={href}
                             href={href}
-                            className={`inline-flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
-                                active ? "bg-gold text-forest font-semibold" : "text-cream/75 hover:text-cream hover:bg-cream/10"
-                            }`}
+                            className={`inline-flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${active ? "bg-gold text-forest font-semibold" : "text-cream/75 hover:text-cream hover:bg-cream/10"
+                                }`}
                         >
                             <Icon className="w-4 h-4" />
                             {label}
@@ -44,6 +49,3 @@ export default function AdminSidebar() {
         </aside>
     );
 }
-
-
-

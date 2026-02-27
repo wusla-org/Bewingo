@@ -1,40 +1,36 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Leaf, Instagram, Facebook, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { initialSiteContent } from "@/lib/admin-data";
 
 export default function Footer() {
-    return (
-        <footer className="bg-forest text-cream">
-            <div className="max-w-6xl mx-auto px-6 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-                    <div className="lg:col-span-2">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Leaf className="text-gold w-5 h-5" />
-                            <span className="text-xl font-bold tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
-                                BEWINGO
-                            </span>
-                        </div>
-                        <p className="text-cream/60 text-sm leading-relaxed max-w-xs mb-6">
-                            Artisanal spices sourced directly from the highlands of Kerala. From farm to table, with love and transparency.
-                        </p>
-                        <div className="flex gap-4">
-                            {[Instagram, Facebook, Twitter].map((Icon, i) => (
-                                <a
-                                    key={i}
-                                    href="#"
-                                    className="w-9 h-9 flex items-center justify-center rounded-full border border-cream/10 text-cream/40 hover:border-gold hover:text-gold transition-colors duration-200"
-                                >
-                                    <Icon className="w-4 h-4" />
-                                </a>
-                            ))}
-                        </div>
-                    </div>
+    const [desc, setDesc] = useState(initialSiteContent.global.footer.companyDesc);
 
+    useEffect(() => {
+        const saved = localStorage.getItem("bewingo_site_content");
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed.global?.footer?.companyDesc) setDesc(parsed.global.footer.companyDesc);
+            } catch (e) {
+                console.error("Failed to parse saved site content", e);
+            }
+        }
+    }, []);
+    return (
+        <footer className="bg-earth text-cream">
+            <div className="max-w-6xl mx-auto px-6 py-20">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mb-20">
+                    {/* Col 1: Products */}
                     <div>
-                        <h4 className="text-xs font-bold uppercase tracking-widest mb-6 text-gold">Shop</h4>
-                        <ul className="flex flex-col gap-3">
-                            {["Signature Spices", "Wild Honey", "Dry Fruits", "Gift Boxes", "New Arrivals"].map((item) => (
+                        <h4 className="text-sm font-black uppercase tracking-[0.2em] mb-8 text-tan">Catalog</h4>
+                        <ul className="flex flex-col gap-4">
+                            {["Black Pepper", "Cinnamon", "Mace", "White Pepper", "Green Cardamom"].map((item) => (
                                 <li key={item}>
-                                    <Link href="/shop" className="text-sm text-cream/60 hover:text-cream transition-colors">
+                                    <Link href="/shop" className="text-xs font-medium text-cream/50 hover:text-tan transition-colors uppercase tracking-widest">
                                         {item}
                                     </Link>
                                 </li>
@@ -42,36 +38,72 @@ export default function Footer() {
                         </ul>
                     </div>
 
+                    {/* Col 2: Info/Contacts */}
                     <div>
-                        <h4 className="text-xs font-bold uppercase tracking-widest mb-6 text-gold">Contact</h4>
-                        <ul className="flex flex-col gap-4">
-                            <li className="flex items-start gap-3 text-sm text-cream/60">
-                                <MapPin className="w-4 h-4 text-gold mt-0.5 shrink-0" />
-                                Kerala, India
+                        <h4 className="text-sm font-black uppercase tracking-[0.2em] mb-8 text-tan">Information</h4>
+                        <ul className="flex flex-col gap-6">
+                            <li className="flex items-start gap-4">
+                                <MapPin className="w-5 h-5 text-tan shrink-0" />
+                                <span className="text-xs font-medium text-cream/50 uppercase tracking-widest leading-relaxed">
+                                    6/345 Export Road, Kochi Port,<br />Kerala, India
+                                </span>
                             </li>
-                            <li className="flex items-center gap-3 text-sm text-cream/60">
-                                <Phone className="w-4 h-4 text-gold shrink-0" />
-                                +91 7012 228 978
+                            <li className="flex items-center gap-4">
+                                <Phone className="w-5 h-5 text-tan shrink-0" />
+                                <span className="text-xs font-medium text-cream/50 uppercase tracking-widest">
+                                    +91 7012 228 978
+                                </span>
                             </li>
-                            <li className="flex items-center gap-3 text-sm text-cream/60">
-                                <Mail className="w-4 h-4 text-gold shrink-0" />
-                                hello@bewingo.com
+                            <li className="flex items-center gap-4">
+                                <Mail className="w-5 h-5 text-tan shrink-0" />
+                                <span className="text-xs font-medium text-cream/50 uppercase tracking-widest">
+                                    trade@bewingo.com
+                                </span>
                             </li>
                         </ul>
                     </div>
+
+                    {/* Col 3: Social */}
+                    <div className="flex flex-col items-start md:items-end">
+                        <h4 className="text-sm font-black uppercase tracking-[0.2em] mb-8 text-tan">Follow Us</h4>
+                        <div className="flex gap-4">
+                            {[Instagram, Facebook].map((Icon, i) => (
+                                <a
+                                    key={i}
+                                    href="#"
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-cream/5 text-tan hover:bg-tan hover:text-earth transition-all border border-cream/10"
+                                >
+                                    <Icon className="w-5 h-5" />
+                                </a>
+                            ))}
+                        </div>
+                        <div className="mt-8">
+                            <div className="opacity-80">
+                                <Image
+                                    src="/logo/bewingo SVG-04.svg"
+                                    alt="BEWINGO Logo"
+                                    width={240}
+                                    height={60}
+                                    className="h-16 w-auto filter grayscale brightness-200"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="border-t border-cream/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-xs text-cream/30">
-                        (c) {new Date().getFullYear()} BEWINGO. All rights reserved.
-                    </p>
-                    <div className="flex gap-6">
-                        {["Privacy Policy", "Terms of Service", "Shipping Policy"].map((item) => (
-                            <a key={item} href="#" className="text-xs text-cream/30 hover:text-cream/60 transition-colors">
-                                {item}
-                            </a>
-                        ))}
+                <div className="border-t border-cream/5 pt-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center h-12 overflow-hidden opacity-50">
+                        <Image
+                            src="/logo/bewingo SVG-04.svg"
+                            alt="BEWINGO Logo"
+                            width={320}
+                            height={90}
+                            className="h-48 w-auto brightness-200 grayscale"
+                        />
                     </div>
+                    <p className="text-[10px] font-bold text-cream/20 uppercase tracking-[0.3em]">
+                        &copy; {new Date().getFullYear()} BEWINGO SPICES. ALL RIGHTS RESERVED.
+                    </p>
                 </div>
             </div>
         </footer>

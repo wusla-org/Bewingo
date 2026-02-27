@@ -1,326 +1,359 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Award, Truck, Leaf, ShieldCheck, Users, Package } from "lucide-react";
-import ProductCard from "@/components/ProductCard";
-import FeatureCard from "@/components/FeatureCard";
+import Image from "next/image";
+import { Globe, Leaf, ShieldCheck, Users, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import ProductGrid from "@/components/ProductGrid";
 import Footer from "@/components/Footer";
-
-const products = [
-    {
-        id: 1,
-        title: "Black Pepper Corn 100g",
-        originalPrice: "Rs. 400.00",
-        currentPrice: "Rs. 199.00",
-        image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=500",
-        badge: "Sale",
-        description: "Bold & Aromatic",
-    },
-    {
-        id: 2,
-        title: "Premium Cardamom 8mm 100g",
-        originalPrice: "Rs. 550.00",
-        currentPrice: "Rs. 499.00",
-        image: "https://images.unsplash.com/photo-1532336414038-cf19250c5757?auto=format&fit=crop&q=80&w=500",
-        badge: "Sale",
-        description: "Big Pods, Bold Aroma",
-    },
-    {
-        id: 3,
-        title: "Premium Cashew W180",
-        originalPrice: "Rs. 399.00",
-        currentPrice: "Rs. 367.00",
-        image: "https://images.unsplash.com/photo-1599599810694-ec3ac9c34b11?auto=format&fit=crop&q=80&w=500",
-        badge: "Sale",
-        description: "Naturally Crunchy",
-    },
-    {
-        id: 4,
-        title: "Wild Forest Honey 500g",
-        originalPrice: "Rs. 650.00",
-        currentPrice: "Rs. 549.00",
-        image: "https://images.unsplash.com/photo-1589182337358-2c63475155bb?auto=format&fit=crop&q=80&w=500",
-        badge: "Best Seller",
-        description: "Raw & Unfiltered",
-    },
-];
-
-const categories = [
-    {
-        title: "Signature Spices",
-        description: "Rare single-origin spices from the hills of Wayanad",
-        image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=800",
-        href: "/shop",
-    },
-    {
-        title: "Dry Fruits",
-        description: "Handpicked, naturally dried fruits from trusted Kerala farms",
-        image: "https://images.unsplash.com/photo-1585520191565-72d312ce0c90?auto=format&fit=crop&q=80&w=800",
-        href: "/shop",
-    },
-    {
-        title: "Wild Honey",
-        description: "Unfiltered honey harvested from wild forest blooms",
-        image: "https://images.unsplash.com/photo-1589182337358-2c63475155bb?auto=format&fit=crop&q=80&w=800",
-        href: "/shop",
-    },
-];
-
-const features = [
-    { Icon: Award, title: "Quality Assured", description: "Every batch is hand-inspected and lab-tested before it reaches you." },
-    { Icon: Truck, title: "Efficient Delivery", description: "Fresh to your door, packed with care and delivered on time." },
-    { Icon: Leaf, title: "100% Natural", description: "No additives, no preservatives. Just pure, natural goodness." },
-    { Icon: ShieldCheck, title: "Certified Quality", description: "FSSAI certified and internationally compliant for your peace of mind." },
-    { Icon: Users, title: "Farmer First", description: "We buy directly from farming communities, ensuring fair and ethical trade." },
-    { Icon: Package, title: "Easy Ordering", description: "A seamless, secure shopping experience from browse to delivery." },
-];
-
-export const metadata = {
-    title: "BEWINGO | Premium Kerala Spices, Honey & Dry Fruits",
-    description: "Experience the authentic taste of Kerala with BEWINGO's hand-picked spices, honey, and dry fruits - sourced directly from trusted farmers.",
-};
+import { initialSiteContent } from "@/lib/admin-data";
 
 export default function HomePage() {
+    const [content, setContent] = useState(initialSiteContent);
+
+    useEffect(() => {
+        const saved = localStorage.getItem("bewingo_site_content");
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                setContent(parsed);
+            } catch (e) {
+                console.error("Failed to parse saved site content", e);
+            }
+        }
+    }, []);
+
+    const home = content.home;
+
+    const fadeIn = {
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    };
+
+    const stagger = {
+        animate: {
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
     return (
         <>
-            <main>
+            <main className="bg-cream">
                 {/* ── Hero ─────────────────────────────────────────── */}
-                <section className="relative min-h-screen flex items-center overflow-hidden bg-forest">
-                    {/* Background image */}
-                    <div className="absolute inset-0">
-                        <img
-                            src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=2000"
-                            alt="Kerala spices background"
-                            className="w-full h-full object-cover opacity-25"
+                <section className="relative min-h-screen flex items-center pt-24 pb-20 overflow-hidden bg-[#FBF9F6]">
+                    {/* Premium Texture Overlay */}
+                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
+
+                    {/* Dynamic Ambient Elements */}
+                    <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                        <motion.div
+                            animate={{
+                                y: [0, -40, 0],
+                                rotate: [0, 10, 0],
+                                opacity: [0.1, 0.2, 0.1]
+                            }}
+                            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute -top-20 -left-20 w-[40vw] h-[40vw] bg-tan/10 rounded-full blur-[120px]"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-forest via-forest/90 to-forest/40" />
+                        <motion.div
+                            animate={{
+                                y: [0, 50, 0],
+                                x: [0, -30, 0],
+                                opacity: [0.05, 0.1, 0.05]
+                            }}
+                            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute top-1/2 right-[-10%] w-[35vw] h-[35vw] bg-earth/5 rounded-full blur-[100px]"
+                        />
                     </div>
 
-                    <div className="relative max-w-6xl mx-auto px-6 pt-32 pb-24">
-                        <div className="max-w-2xl">
-                            <p className="text-gold text-xs font-bold uppercase tracking-[0.4em] mb-6">Est. Kerala, 1982</p>
-                            <h1
-                                className="text-5xl md:text-7xl font-bold leading-tight text-cream mb-8"
+                    <div className="relative max-w-7xl mx-auto px-6 w-full flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                        {/* Left Content Column */}
+                        <motion.div
+                            variants={stagger}
+                            initial="initial"
+                            animate="animate"
+                            className="flex-1 z-10 text-center lg:text-left"
+                        >
+                            <motion.div variants={fadeIn} className="inline-flex items-center gap-2 px-3 py-1 bg-tan/10 rounded-full mb-8">
+                                <span className="w-1.5 h-1.5 rounded-full bg-tan animate-pulse" />
+                                <span className="text-tan text-[10px] font-black uppercase tracking-[0.2em]">{home.hero.badge}</span>
+                            </motion.div>
+
+                            <motion.h1
+                                variants={fadeIn}
+                                className="text-6xl md:text-8xl xl:text-9xl font-black text-earth mb-8 tracking-tighter uppercase leading-[0.85] italic"
                                 style={{ fontFamily: "'Playfair Display', serif" }}
                             >
-                                Artisanal Spices,{" "}
-                                <em className="font-normal not-italic text-gold">Sourced from the Heart.</em>
-                            </h1>
-                            <p className="text-cream/70 text-lg md:text-xl font-light leading-relaxed mb-10 max-w-xl">
-                                Experience the bold and aromatic legacy of Kerala. Every spice is hand-picked, sustainably sourced, and delivered with unmatched freshness.
-                            </p>
-                            <div className="flex flex-wrap gap-4">
+                                {home.hero.title.split(' ').slice(0, -1).join(' ')} <br />
+                                <span className="text-tan relative inline-block">
+                                    {home.hero.title.split(' ').slice(-1)}
+                                    <svg className="absolute -bottom-2 md:-bottom-4 left-0 w-full h-2 md:h-4 text-tan/30 overflow-visible" preserveAspectRatio="none">
+                                        <path d="M0,5 Q50,0 100,5" stroke="currentColor" fill="none" strokeWidth="2" />
+                                    </svg>
+                                </span>
+                            </motion.h1>
+
+                            <motion.p variants={fadeIn} className="text-earth/60 text-lg md:text-xl leading-relaxed mb-12 max-w-xl mx-auto lg:mx-0 font-medium tracking-tight">
+                                {home.hero.subtitle}
+                            </motion.p>
+
+                            <motion.div variants={fadeIn} className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8">
                                 <Link
-                                    href="/shop"
-                                    className="inline-flex items-center gap-2 bg-gold text-forest text-sm font-bold uppercase tracking-widest px-8 py-4 hover:bg-gold-light transition-colors duration-200"
+                                    href="/contact"
+                                    className="group relative inline-flex items-center justify-center bg-earth text-cream text-[10px] font-black uppercase tracking-[0.3em] px-14 py-6 rounded-full overflow-hidden transition-all shadow-2xl hover:bg-tan active:scale-95"
                                 >
-                                    Shop The Collection
-                                    <ArrowRight className="w-4 h-4" />
+                                    <span className="relative z-10">{home.hero.ctaText}</span>
+                                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
                                 </Link>
-                                <Link
-                                    href="/our-story"
-                                    className="inline-flex items-center gap-2 border border-cream/20 text-cream text-sm font-semibold uppercase tracking-widest px-8 py-4 hover:border-cream/40 hover:bg-cream/5 transition-colors duration-200"
+
+                                <div className="flex -space-x-3">
+                                    {[1, 2, 3].map((i) => (
+                                        <div key={i} className="w-10 h-10 rounded-full border-2 border-[#FBF9F6] bg-cream flex items-center justify-center overflow-hidden">
+                                            <div className="w-full h-full bg-tan/20 flex items-center justify-center">
+                                                <Globe className="w-5 h-5 text-tan" />
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div className="pl-6 flex flex-col justify-center items-start">
+                                        <span className="text-earth font-black text-xs leading-none">24+ Countries</span>
+                                        <span className="text-earth/40 text-[9px] font-bold uppercase tracking-wider mt-1">Global Trade Network</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+
+                        {/* Right Visual Column */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                            className="flex-1 relative w-full max-w-2xl"
+                        >
+                            <div className="relative aspect-[4/5] md:aspect-square">
+                                {/* Geometric Design Behind Product */}
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] border border-earth/10 rounded-full rotate-45" />
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] border border-tan/10 rounded-full -rotate-12" />
+
+                                {/* Featured Visual */}
+                                <div className="relative z-10 h-full w-full flex items-center justify-center p-8 group overflow-hidden rounded-[3rem]">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=1200"
+                                        alt="Global Spice Distribution"
+                                        className="w-full h-full object-cover rounded-[3rem] transition-transform duration-[2s] group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-earth/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                                    {/* Certification Hover Badge */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        className="absolute bottom-10 left-10 p-4 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl flex items-center gap-4 border border-white/50"
+                                    >
+                                        <ShieldCheck className="w-8 h-8 text-tan" />
+                                        <div>
+                                            <p className="text-[10px] font-black text-earth uppercase tracking-widest">Certified Origin</p>
+                                            <p className="text-[8px] font-bold text-earth/50 uppercase">Quality Guaranteed</p>
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                {/* Floating Brand Logo elements */}
+                                <motion.div
+                                    animate={{ y: [0, -30, 0], rotate: [0, 15, 0] }}
+                                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                                    className="absolute -top-12 -right-8 w-32 h-32 opacity-15 z-20 pointer-events-none"
                                 >
-                                    Our Philosophy
-                                </Link>
+                                    <Image
+                                        src="/logo/bewingo SVG-04.svg"
+                                        alt=""
+                                        width={140}
+                                        height={140}
+                                        className="w-full h-full grayscale brightness-0"
+                                    />
+                                </motion.div>
+                                <motion.div
+                                    animate={{ y: [0, 20, 0], rotate: [0, -15, 0] }}
+                                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+                                    className="absolute -bottom-6 -left-12 w-28 h-28 opacity-15 z-20 pointer-events-none"
+                                >
+                                    <Image
+                                        src="/logo/bewingo SVG-04.svg"
+                                        alt=""
+                                        width={120}
+                                        height={120}
+                                        className="w-full h-full grayscale brightness-0"
+                                    />
+                                </motion.div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
 
-                    {/* Scroll cue */}
-                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-cream/30">
-                        <span className="text-[9px] uppercase tracking-[0.3em]">Scroll</span>
-                        <div className="w-px h-10 bg-cream/20" />
+                    {/* Scroll Indicator */}
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-4">
+                        <span className="text-[10px] font-black text-earth/20 uppercase tracking-[0.4em] rotate-90 mb-4 font-serif">Scroll</span>
+                        <div className="w-[1px] h-16 bg-gradient-to-b from-tan to-transparent" />
                     </div>
                 </section>
 
-                {/* ── Trust Bar ────────────────────────────────────── */}
-                <section className="border-y border-forest/5 bg-white">
-                    <div className="max-w-6xl mx-auto px-6 py-5">
-                        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 text-muted text-xs font-semibold uppercase tracking-widest">
-                            {["100% Organic", "Direct from Farmers", "FSSAI Certified", "Free Shipping Rs. 500+", "Lab Tested"].map((item) => (
-                                <span key={item} className="flex items-center gap-2">
-                                    <span className="w-1 h-1 rounded-full bg-gold inline-block" />
-                                    {item}
-                                </span>
+                {/* ── Certifications Marquee ────────────────────────── */}
+                <section className="py-12 bg-cream/50 border-y border-earth/5 overflow-hidden">
+                    <div className="max-w-7xl mx-auto px-6 mb-8 text-center">
+                        <p className="text-[10px] font-black text-earth/30 uppercase tracking-[0.4em] mb-4">
+                            {home.certifications?.title || "OUR GLOBAL CERTIFICATIONS"}
+                        </p>
+                    </div>
+
+                    <div className="relative flex overflow-x-hidden">
+                        <div className="py-4 animate-marquee whitespace-nowrap flex items-center gap-20">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="flex items-center gap-20">
+                                    {home.certifications?.logos.map((logo, idx) => (
+                                        <div key={`${i}-${idx}`} className="h-12 md:h-16 w-32 md:w-40 relative opacity-40 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <div className="w-full h-full bg-earth/10 rounded-lg flex items-center justify-center text-[10px] font-bold text-earth/40 uppercase tracking-tighter text-center px-4">
+                                                {logo.split('/').pop()?.split('.')[0]?.toUpperCase() || "CERTIFIED"}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             ))}
                         </div>
                     </div>
                 </section>
 
-                {/* ── Featured Products ─────────────────────────────── */}
-                <section className="py-24 bg-cream" id="products">
-                    <div className="max-w-6xl mx-auto px-6">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
-                            <div>
-                                <p className="text-gold text-xs font-bold uppercase tracking-widest mb-3">Handpicked for You</p>
-                                <h2
-                                    className="text-4xl md:text-5xl font-bold text-forest"
-                                    style={{ fontFamily: "'Playfair Display', serif" }}
-                                >
-                                    Premium Products
-                                </h2>
+                {/* ── Quality Journey Section ─────────────────────── */}
+                <section className="py-24 bg-dark text-cream relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
+
+                    <div className="max-w-7xl mx-auto px-6 relative z-10">
+                        <div className="text-center mb-20">
+                            <motion.p
+                                whileInView={{ opacity: 1, y: 0 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                className="text-tan text-[10px] font-black uppercase tracking-[0.4em] mb-4"
+                            >
+                                {home.journey?.title || "PLANTATION TO PORT"}
+                            </motion.p>
+                            <motion.h2
+                                whileInView={{ opacity: 1, y: 0 }}
+                                initial={{ opacity: 0, y: 30 }}
+                                className="text-4xl md:text-5xl font-black italic uppercase leading-tight"
+                                style={{ fontFamily: "'Playfair Display', serif" }}
+                            >
+                                {home.journey?.subtitle || "Our Transparent Export Supply Chain"}
+                            </motion.h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative">
+                            {/* Connector Line (Desktop) */}
+                            <div className="hidden md:block absolute top-[60px] left-[10%] right-[10%] h-[1px] bg-cream/10 z-0" />
+
+                            {(home.journey?.steps || []).map((step, idx) => {
+                                const Icon = step.icon === "Leaf" ? Leaf : step.icon === "ShieldCheck" ? ShieldCheck : step.icon === "Globe" ? Globe : Users;
+                                return (
+                                    <motion.div
+                                        key={idx}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        initial={{ opacity: 0, y: 40 }}
+                                        transition={{ delay: idx * 0.15 }}
+                                        className="relative z-10 flex flex-col items-center text-center group"
+                                    >
+                                        <div className="w-24 h-24 rounded-full bg-forest border border-cream/10 flex items-center justify-center mb-8 bg-[#1e2a1e] transition-transform duration-500 group-hover:scale-110 group-hover:bg-tan group-hover:border-tan">
+                                            <Icon className="w-10 h-10 text-tan group-hover:text-cream transition-colors" strokeWidth={1} />
+                                        </div>
+                                        <h3 className="text-sm font-black uppercase tracking-[0.2em] mb-4 text-tan group-hover:text-cream transition-colors">{step.title}</h3>
+                                        <p className="text-cream/50 text-[10px] font-medium leading-relaxed uppercase tracking-wider max-w-[180px]">
+                                            {step.text}
+                                        </p>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </section>
+
+                {/* ── Product Grid (1+4 Design) ───────────────────── */}
+
+                {/* ── Product Grid (1+4 Design) ───────────────────── */}
+                <ProductGrid />
+
+                {/* ── About Section (Spice Tray Layout) ─────────────── */}
+                <section className="py-24 bg-white relative overflow-hidden">
+                    <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                        {/* Left: Spice Tray Image */}
+                        <motion.div
+                            whileInView={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, x: -50 }}
+                            viewport={{ once: true }}
+                            className="relative aspect-square rounded-[3rem] overflow-hidden shadow-2xl"
+                        >
+                            <img
+                                src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=1200"
+                                alt="Spice Tray Visual"
+                                className="w-full h-full object-cover"
+                            />
+                        </motion.div>
+
+                        {/* Right: Content */}
+                        <motion.div
+                            whileInView={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, x: 50 }}
+                            viewport={{ once: true }}
+                        >
+                            <h2
+                                className="text-4xl md:text-5xl font-black text-earth mb-8 leading-tight"
+                                style={{ fontFamily: "'Playfair Display', serif" }}
+                            >
+                                {home.about.title.split(' ').slice(0, -1).join(' ')} <br /> <span className="text-tan">{home.about.title.split(' ').slice(-1)}</span>
+                            </h2>
+                            <div className="space-y-6 text-earth/70 text-sm leading-relaxed font-medium">
+                                <p>
+                                    {home.about.description1}
+                                </p>
+                                <p>
+                                    {home.about.description2}
+                                </p>
                             </div>
                             <Link
-                                href="/shop"
-                                className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-forest border-b-2 border-gold pb-0.5 hover:text-gold transition-colors"
+                                href="/our-story"
+                                className="inline-flex mt-10 items-center justify-center bg-earth text-cream text-[10px] font-black uppercase tracking-[0.3em] px-12 py-4 rounded-full hover:bg-tan transition-all shadow-xl"
                             >
-                                View All <ArrowRight className="w-4 h-4" />
+                                Know More
                             </Link>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {products.map((p) => (
-                                <ProductCard key={p.id} {...p} />
-                            ))}
-                        </div>
+                        </motion.div>
                     </div>
-                </section>
 
-                {/* ── Categories ───────────────────────────────────── */}
-                <section className="py-24 bg-white" id="categories">
-                    <div className="max-w-6xl mx-auto px-6">
-                        <div className="text-center mb-14">
-                            <p className="text-gold text-xs font-bold uppercase tracking-widest mb-3">Explore</p>
-                            <h2
-                                className="text-4xl md:text-5xl font-bold text-forest"
-                                style={{ fontFamily: "'Playfair Display', serif" }}
-                            >
-                                Our Collections
-                            </h2>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {categories.map((cat) => (
-                                <Link
-                                    key={cat.title}
-                                    href={cat.href}
-                                    className="group relative overflow-hidden rounded-xl aspect-[4/5] block"
+                    {/* Features Utility Bar (Below About) */}
+                    <div className="bg-tan mt-24 py-16">
+                        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
+                            {[
+                                { title: "SECURED PAYMENT", icon: ShieldCheck },
+                                { title: "FREE SHIPPING", icon: Globe },
+                                { title: "CUSTOMER SUPPORT", icon: Users },
+                            ].map((feature, idx) => (
+                                <motion.div
+                                    key={feature.title}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    className="flex flex-col items-center text-center gap-4"
                                 >
-                                    <img
-                                        src={cat.image}
-                                        alt={cat.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-forest/90 via-forest/30 to-transparent" />
-                                    <div className="absolute inset-x-0 bottom-0 p-6">
-                                        <h3 className="text-white text-xl font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
-                                            {cat.title}
-                                        </h3>
-                                        <p className="text-cream/70 text-sm mb-4">{cat.description}</p>
-                                        <span className="inline-flex items-center gap-1.5 text-gold text-xs font-bold uppercase tracking-widest">
-                                            Shop Now <ArrowRight className="w-3.5 h-3.5" />
-                                        </span>
+                                    <div className="w-12 h-12 flex items-center justify-center text-cream border border-cream/20 rounded-full">
+                                        <feature.icon className="w-6 h-6" strokeWidth={1} />
                                     </div>
-                                </Link>
+                                    <span className="text-[10px] font-black tracking-[0.2em] text-cream uppercase">{feature.title}</span>
+                                </motion.div>
                             ))}
                         </div>
                     </div>
                 </section>
-
-                {/* ── Why Choose Us ────────────────────────────────── */}
-                <section className="py-24 bg-cream" id="why-us">
-                    <div className="max-w-6xl mx-auto px-6">
-                        <div className="text-center mb-14">
-                            <p className="text-gold text-xs font-bold uppercase tracking-widest mb-3">Our Promise</p>
-                            <h2
-                                className="text-4xl md:text-5xl font-bold text-forest mb-4"
-                                style={{ fontFamily: "'Playfair Display', serif" }}
-                            >
-                                Why BEWINGO
-                            </h2>
-                            <p className="text-muted max-w-xl mx-auto text-base">
-                                We&apos;re committed to bringing you the finest quality spices with unmatched freshness and authenticity.
-                            </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {features.map((f) => (
-                                <FeatureCard key={f.title} {...f} />
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* ── Brand Story ──────────────────────────────────── */}
-                <section className="py-24 bg-forest text-cream" id="story">
-                    <div className="max-w-6xl mx-auto px-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                            {/* Text */}
-                            <div>
-                                <p className="text-gold text-xs font-bold uppercase tracking-widest mb-6">Our Journey</p>
-                                <h2
-                                    className="text-4xl md:text-5xl font-bold leading-tight mb-6"
-                                    style={{ fontFamily: "'Playfair Display', serif" }}
-                                >
-                                    From That First Bag <br />
-                                    <em className="font-normal not-italic text-gold">to Your Kitchen</em>
-                                </h2>
-                                <p className="text-cream/70 text-base leading-relaxed mb-4">
-                                    From that first bag of Black Peppercorn to today&apos;s growing collection, our journey has been fueled by your belief in us - every purchase supporting farmers, every shared post spreading our mission.
-                                </p>
-                                <p className="text-cream/70 text-base leading-relaxed mb-8">
-                                    As we continue to grow, we&apos;re not just selling spices but building a movement where your kitchen becomes a force for change. The most flavorful chapters are yet to come.
-                                </p>
-                                <Link
-                                    href="/our-story"
-                                    className="inline-flex items-center gap-2 bg-gold text-forest text-sm font-bold uppercase tracking-widest px-8 py-4 hover:bg-gold-light transition-colors duration-200"
-                                >
-                                    Learn Our Story <ArrowRight className="w-4 h-4" />
-                                </Link>
-                            </div>
-
-                            {/* Image */}
-                            <div className="relative">
-                                <div className="aspect-square rounded-xl overflow-hidden">
-                                    <img
-                                        src="https://images.unsplash.com/photo-1532336414038-cf19250c5757?auto=format&fit=crop&q=80&w=800"
-                                        alt="BEWINGO story"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                {/* Stat card */}
-                                <div className="absolute -bottom-6 -left-6 bg-gold text-forest p-6 rounded-xl shadow-xl">
-                                    <p className="text-3xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>40+</p>
-                                    <p className="text-xs font-bold uppercase tracking-wider mt-1">Farmer Partners</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* ── Newsletter ───────────────────────────────────── */}
-                <section className="py-20 bg-white border-t border-forest/5">
-                    <div className="max-w-6xl mx-auto px-6 text-center">
-                        <p className="text-gold text-xs font-bold uppercase tracking-widest mb-4">Stay in the Loop</p>
-                        <h2
-                            className="text-3xl md:text-4xl font-bold text-forest mb-4"
-                            style={{ fontFamily: "'Playfair Display', serif" }}
-                        >
-                            Join the BEWINGO Family
-                        </h2>
-                        <p className="text-muted mb-8 max-w-md mx-auto">Subscribe for exclusive deals, new arrivals, and Kerala spice stories delivered to your inbox.</p>
-                        <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                            <input
-                                type="email"
-                                placeholder="Your email address"
-                                className="flex-1 border border-forest/10 bg-cream text-forest text-sm px-5 py-3.5 outline-none focus:border-gold transition-colors rounded-lg"
-                            />
-                            <button
-                                type="submit"
-                                className="bg-forest text-cream text-xs font-bold uppercase tracking-widest px-6 py-3.5 hover:bg-sage transition-colors rounded-lg whitespace-nowrap"
-                            >
-                                Subscribe
-                            </button>
-                        </form>
-                    </div>
-                </section>
-            </main>
+            </main >
 
             <Footer />
         </>
     );
 }
-
-
-
-
-

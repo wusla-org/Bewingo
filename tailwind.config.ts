@@ -9,13 +9,12 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
-                forest: "#0B221A",
-                emerald: "#1B4332",
-                sage: "#2D6A4F",
-                gold: "#C9963A",
-                "gold-light": "#E8B84B",
-                cream: "#FDFCF8",
-                muted: "#6B705C",
+                tan: "#b89364",
+                "tan-dark": "#a08154",
+                cream: "#f7f4f0",
+                earth: "#4a3b2b",
+                dark: "#1a1a1a",
+                muted: "#8c8c8c",
             },
             fontFamily: {
                 playfair: ["var(--font-playfair)", "serif"],
@@ -23,6 +22,15 @@ const config: Config = {
             },
             maxWidth: {
                 "8xl": "88rem",
+            },
+            animation: {
+                marquee: 'marquee 25s linear infinite',
+            },
+            keyframes: {
+                marquee: {
+                    '0%': { transform: 'translateX(0%)' },
+                    '100%': { transform: 'translateX(-100%)' },
+                },
             },
         },
     },

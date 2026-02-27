@@ -28,59 +28,68 @@ export default function ProductDetail() {
     return (
         <main className="bg-cream min-h-screen pt-28 pb-20">
             <div className="max-w-6xl mx-auto px-6">
-                <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-forest mb-8">
-                    <ArrowLeft className="w-4 h-4" />
-                    Back to shop
+                <Link href="/shop" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted hover:text-gold mb-10 transition-colors">
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    Back to Catalog
                 </Link>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                    <div className="space-y-4">
-                        <div className="rounded-2xl overflow-hidden border border-forest/10 bg-white">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                    <div className="space-y-6">
+                        <div className="rounded-sm overflow-hidden border border-forest/5 bg-white shadow-sm">
                             <img src={product.image} alt={product.name} className="w-full aspect-square object-cover" />
                         </div>
-                        <div className="grid grid-cols-4 gap-3">
+                        <div className="grid grid-cols-4 gap-4">
                             {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className="aspect-square rounded-lg border border-forest/10 bg-white" />
+                                <div key={i} className="aspect-square rounded-sm border border-forest/5 bg-white opacity-50" />
                             ))}
                         </div>
                     </div>
 
-                    <div className="bg-white border border-forest/10 rounded-2xl p-6 md:p-8">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-gold mb-3">{product.category}</p>
-                        <h1 className="text-4xl md:text-5xl font-bold text-forest leading-tight mb-4">{product.name}</h1>
+                    <div className="bg-white border border-forest/5 rounded-sm p-8 md:p-12 shadow-sm">
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gold mb-4">{product.category} · Export Grade</p>
+                        <h1 className="text-4xl md:text-6xl font-bold text-forest leading-tight mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>{product.name}</h1>
 
-                        <div className="flex items-end gap-3 mb-6">
-                            <span className="text-3xl font-bold text-forest">{product.price}</span>
-                            <span className="text-lg text-muted/60 line-through">{product.originalPrice}</span>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-gold">20% Off</span>
+                        <div className="flex items-center gap-4 mb-8">
+                            <span className="inline-block px-3 py-1 bg-forest text-gold text-[9px] font-black uppercase tracking-widest">In Stock: 5 MT+</span>
+                            <span className="inline-block px-3 py-1 bg-cream text-forest text-[9px] font-black uppercase tracking-widest border border-forest/5">Kochi Hub</span>
                         </div>
 
-                        <p className="text-muted leading-relaxed mb-8">{product.description}</p>
+                        <p className="text-muted text-lg leading-relaxed mb-10">{product.description}</p>
 
-                        <div className="grid grid-cols-2 gap-4 border-y border-forest/10 py-6 mb-8">
-                            {product.details.map((detail) => (
-                                <div key={detail.label}>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted mb-1">{detail.label}</p>
-                                    <p className="text-sm font-semibold text-forest">{detail.value}</p>
+                        <div className="grid grid-cols-1 gap-0 border border-forest/5 rounded-sm overflow-hidden mb-10 divide-y divide-forest/5">
+                            {[
+                                { label: "Technical Grade", value: "TGSEB / Bold 8mm" },
+                                { label: "Moisture Content", value: "< 12.5% Max" },
+                                { label: "Admixture", value: "< 0.5% Max" },
+                                { label: "Packing Status", value: "Available in 25kg/50kg Jute/PP" },
+                                { label: "Certifications", value: "APEDA, Spices Board, ISO" },
+                                ...product.details
+                            ].map((detail) => (
+                                <div key={detail.label} className="grid grid-cols-2 px-6 py-4 bg-cream/20">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-forest/40">{detail.label}</span>
+                                    <span className="text-sm font-bold text-forest text-right">{detail.value}</span>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-3 mb-8">
-                            <button className="flex-1 bg-forest text-cream text-xs font-bold uppercase tracking-widest py-3.5 rounded-lg hover:bg-sage transition-colors">
-                                Add to Cart
-                            </button>
-                            <button className="flex-1 border border-forest/20 text-forest text-xs font-bold uppercase tracking-widest py-3.5 rounded-lg hover:border-gold hover:text-gold transition-colors">
-                                Request Bulk Quote
+                        <div className="flex flex-col gap-4 mb-10">
+                            <Link
+                                href="/contact"
+                                className="flex-1 bg-forest text-gold text-xs font-black uppercase tracking-[0.2em] py-5 rounded-sm hover:bg-forest/90 transition-all text-center shadow-lg hover:-translate-y-0.5"
+                            >
+                                Request Commercial Quote
+                            </Link>
+                            <button className="flex-1 border-2 border-forest/5 text-forest text-[10px] font-black uppercase tracking-[0.2em] py-5 rounded-sm hover:border-gold hover:text-gold transition-all">
+                                Download Data Sheet (PDF)
                             </button>
                         </div>
 
-                        <div className="space-y-3 mb-8">
-                            <h3 className="text-sm font-bold text-forest uppercase tracking-widest">BEWINGO Standards</h3>
-                            <ul className="space-y-2">
+                        <div className="space-y-4 mb-10">
+                            <h3 className="text-xs font-black text-forest uppercase tracking-[0.2em] border-b border-forest/5 pb-2">Export Standards</h3>
+                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                                 {product.benefits.map((benefit) => (
-                                    <li key={benefit} className="text-sm text-muted flex items-start gap-2">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-gold mt-2 shrink-0" />
+                                    <li key={benefit} className="text-[11px] font-bold text-muted uppercase tracking-wider flex items-center gap-2">
+                                        <div className="w-1 h-1 rounded-full bg-gold" />
                                         {benefit}
                                     </li>
                                 ))}

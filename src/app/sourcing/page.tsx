@@ -1,51 +1,65 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { Leaf, Handshake, ShieldCheck, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import { initialSiteContent } from "@/lib/admin-data";
 
-export const metadata = {
-    title: "Sourcing | BEWINGO",
-    description: "Learn how BEWINGO sources spices directly from trusted farmers with quality-first processes.",
-};
+const iconMap = { Leaf, Handshake, ShieldCheck };
 
 export default function SourcingPage() {
+    const [content, setContent] = useState(initialSiteContent.sourcing);
+
+    useEffect(() => {
+        const saved = localStorage.getItem("bewingo_site_content");
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed.sourcing) setContent(parsed.sourcing);
+            } catch (e) {
+                console.error("Failed to parse saved site content", e);
+            }
+        }
+    }, []);
+
     return (
         <>
             <main className="pt-20 bg-cream min-h-screen">
-                <section className="bg-forest text-cream py-20">
+                <section className="bg-forest text-cream py-24">
                     <div className="max-w-6xl mx-auto px-6">
-                        <p className="text-gold text-xs font-bold uppercase tracking-widest mb-3">Farm To Market</p>
-                        <h1 className="text-5xl md:text-6xl font-bold mb-5">Sourcing</h1>
-                        <p className="text-cream/75 text-lg max-w-2xl">
-                            We source spices from trusted regions and farmer communities, then process and pack with strict quality control.
+                        <p className="text-gold text-xs font-bold uppercase tracking-widest mb-4">{content.hero.badge}</p>
+                        <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>{content.hero.title}</h1>
+                        <p className="text-cream/75 text-lg md:text-xl max-w-3xl leading-relaxed">
+                            {content.hero.description}
                         </p>
                     </div>
                 </section>
 
                 <section className="py-16">
                     <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {[
-                            { Icon: Leaf, title: "Direct Sourcing", text: "We work directly with farmers and avoid unnecessary middle layers." },
-                            { Icon: Handshake, title: "Fair Partnerships", text: "Long-term relationships with fair pricing and consistent demand." },
-                            { Icon: ShieldCheck, title: "Quality Standards", text: "Lot checks, moisture control, and clean packaging before dispatch." },
-                        ].map((item) => (
-                            <article key={item.title} className="rounded-xl border border-forest/10 bg-white p-5">
-                                <item.Icon className="w-6 h-6 text-gold mb-3" />
-                                <h2 className="text-lg font-bold text-forest mb-2">{item.title}</h2>
-                                <p className="text-sm text-muted">{item.text}</p>
-                            </article>
-                        ))}
+                        {content.process.map((item) => {
+                            const Icon = (iconMap as any)[item.icon] || Leaf;
+                            return (
+                                <article key={item.title} className="rounded-xl border border-forest/10 bg-white p-5">
+                                    <Icon className="w-6 h-6 text-gold mb-3" />
+                                    <h2 className="text-lg font-bold text-forest mb-2">{item.title}</h2>
+                                    <p className="text-sm text-muted">{item.text}</p>
+                                </article>
+                            );
+                        })}
                     </div>
                 </section>
 
                 <section className="py-10">
                     <div className="max-w-6xl mx-auto px-6">
-                        <div className="rounded-2xl border border-forest/10 bg-white p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div className="rounded-2xl border border-forest/10 bg-white p-8 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
                             <div>
-                                <h3 className="text-2xl font-bold text-forest mb-2">Need bulk sourcing support?</h3>
-                                <p className="text-muted text-sm">Share your requirement and our team will send the best matching lots and quote.</p>
+                                <h3 className="text-2xl font-bold text-forest mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>{content.banner.title}</h3>
+                                <p className="text-muted text-base max-w-xl">{content.banner.text}</p>
                             </div>
-                            <Link href="/contact" className="inline-flex items-center gap-2 bg-forest text-cream px-5 py-3 rounded-lg text-sm font-bold uppercase tracking-widest hover:bg-emerald transition-colors">
-                                Contact Team <ArrowRight className="w-4 h-4" />
+                            <Link href="/contact" className="inline-flex items-center gap-2 bg-forest text-cream px-8 py-4 rounded-sm text-sm font-bold uppercase tracking-widest hover:bg-gold hover:text-forest transition-all shrink-0">
+                                Contact Trade Desk <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>
                     </div>
