@@ -15,7 +15,7 @@ export default function HomePage() {
     useEffect(() => {
         async function fetchContent() {
             try {
-                const res = await fetch('/api/admin/content');
+                const res = await fetch('/api/admin/content', { cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
                     setContent(data);
@@ -176,6 +176,7 @@ export default function HomePage() {
                                         width={140}
                                         height={140}
                                         className="w-full h-full grayscale brightness-0"
+                                        priority
                                     />
                                 </motion.div>
                                 <motion.div

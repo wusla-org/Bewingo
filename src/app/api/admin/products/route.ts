@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProducts, saveProducts } from '@/lib/data-service';
+
+export const dynamic = 'force-dynamic';
 import { AdminProduct } from '@/lib/admin-data';
 
 export async function GET() {

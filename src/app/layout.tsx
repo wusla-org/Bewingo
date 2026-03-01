@@ -9,6 +9,7 @@ const outfit = Outfit({
     display: "swap",
 });
 
+
 const playfair = Playfair_Display({
     subsets: ["latin"],
     variable: "--font-playfair",
@@ -18,6 +19,10 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
     title: "BEWINGO | Premium Kerala Spices & Artisanal Flavors",
     description: "Experience the authentic taste of Kerala with BEWINGO's hand-picked spices, honey, and dry fruits. Sourced directly from trusted farmers.",
+    icons: {
+        icon: "/logo/bewingo SVG-04.svg",
+        apple: "/logo/bewingo SVG-04.svg",
+    },
 };
 
 export default function RootLayout({
@@ -26,7 +31,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" className={`${outfit.variable} ${playfair.variable}`}>
+        <html lang="en" className={`${outfit.variable} ${playfair.variable}`} data-scroll-behavior="smooth">
             <body>
                 <Navbar />
                 {children}

@@ -14,7 +14,7 @@ export default function SourcingPage() {
     useEffect(() => {
         async function fetchContent() {
             try {
-                const res = await fetch('/api/admin/content');
+                const res = await fetch('/api/admin/content', { cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
                     if (data.sourcing) setContent(data.sourcing);

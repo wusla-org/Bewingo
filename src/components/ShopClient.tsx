@@ -17,7 +17,7 @@ export default function ShopClient() {
     useEffect(() => {
         async function fetchProducts() {
             try {
-                const res = await fetch('/api/admin/products');
+                const res = await fetch('/api/admin/products', { cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
                     setProducts(data.filter((p: AdminProduct) => p.status === 'Published'));

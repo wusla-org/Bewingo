@@ -15,7 +15,7 @@ export default function ContentEditor() {
     async function fetchContent() {
         setLoading(true);
         try {
-            const res = await fetch('/api/admin/content');
+            const res = await fetch('/api/admin/content', { cache: 'no-store' });
             const data = await res.json();
             setContent(data);
         } catch (error) {

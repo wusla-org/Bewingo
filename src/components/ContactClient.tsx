@@ -11,7 +11,7 @@ export default function ContactClient() {
     useEffect(() => {
         async function fetchContent() {
             try {
-                const res = await fetch('/api/admin/content');
+                const res = await fetch('/api/admin/content', { cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
                     setContent(data);
