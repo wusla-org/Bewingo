@@ -1,0 +1,125 @@
+{
+    "home": {
+        "hero": {
+            "badge": "Global Export Partner",
+            "title": "PREMIUM KERALA SPICES",
+            "subtitle": "Direct from the lush plantations of Wayanad and Idukki to the global market.",
+            "ctaText": "ENQUIRE NOW"
+        },
+        "about": {
+            "title": "About BEWINGO",
+            "description1": "BEWINGO spices are top grade, hand-picked by experts and processed under strict hygienic conditions and careful supervision which leads to unequalled savory goodness to your cooking.",
+            "description2": "Though it is one mission but not adopted like business, the product is entirely pure with its quality control and is under the strict supervision of family. This is the reason that no other products of the same type could take the place of this."
+        },
+        "certifications": {
+            "title": "OUR GLOBAL CERTIFICATIONS",
+            "logos": [
+                "/certifications/fssai.png",
+                "/certifications/iso.png",
+                "/certifications/haccp.png",
+                "/certifications/spices-board.png",
+                "/certifications/gmp.png"
+            ]
+        },
+        "journey": {
+            "title": "PLANTATION TO PORT",
+            "subtitle": "Our Transparent Export Supply Chain",
+            "steps": [
+                {
+                    "title": "Sourcing",
+                    "text": "Directly from the farm gates of Idukki and Wayanad.",
+                    "icon": "Leaf"
+                },
+                {
+                    "title": "Processing",
+                    "text": "State-of-the-art cleaning, grading, and moisture control.",
+                    "icon": "ShieldCheck"
+                },
+                {
+                    "title": "Logistics",
+                    "text": "Standardized packaging for sea and air freight.",
+                    "icon": "Globe"
+                },
+                {
+                    "title": "Delivery",
+                    "text": "Trusted global distribution network serving 24+ countries.",
+                    "icon": "Users"
+                }
+            ]
+        }
+    },
+    "story": {
+        "hero": {
+            "badge": "About BEWINGO",
+            "title": "Our Story",
+            "description": "From local sourcing in Kerala to trusted delivery across markets, BEWINGO is built on quality, transparency, and long-term farmer partnerships."
+        },
+        "mission": {
+            "title": "A simple mission: better spices, fair trade",
+            "text1": "BEWINGO started with one goal: connect customers to authentic spice quality while giving farmers a fair and stable market.",
+            "text2": "Every batch is carefully selected, cleaned, and packed to preserve aroma, freshness, and purity. We grow with every order, while keeping quality standards consistent."
+        },
+        "cards": [
+            {
+                "icon": "Leaf",
+                "title": "Natural Quality",
+                "text": "No artificial preservatives. Clean and traceable sourcing."
+            },
+            {
+                "icon": "Users",
+                "title": "Farmer Partnerships",
+                "text": "Direct relationships with grower communities."
+            },
+            {
+                "icon": "ShieldCheck",
+                "title": "Quality Checks",
+                "text": "Each lot is verified before dispatch."
+            }
+        ]
+    },
+    "sourcing": {
+        "hero": {
+            "badge": "Industrial Supply Chain",
+            "title": "Quality Sourcing",
+            "description": "Our sourcing strategy is built on direct farmer partnerships and rigorous industrial quality benchmarks. We ensure consistent supply for global export mandates."
+        },
+        "process": [
+            {
+                "icon": "Leaf",
+                "title": "Direct Sourcing",
+                "text": "We work directly with farmers and avoid unnecessary middle layers."
+            },
+            {
+                "icon": "Handshake",
+                "title": "Fair Partnerships",
+                "text": "Long-term relationships with fair pricing and consistent demand."
+            },
+            {
+                "icon": "ShieldCheck",
+                "title": "Quality Standards",
+                "text": "Lot checks, moisture control, and clean packaging before dispatch."
+            }
+        ],
+        "banner": {
+            "title": "Bulk Sourcing & Supply Chain Support",
+            "text": "Share your annual requirements or spot-buy needs. Our trade team will provide lot-sampled quotes and logistics timelines."
+        }
+    },
+    "global": {
+        "footer": {
+            "companyDesc": "Exporting premium Kerala agro-products to global markets. We specialize in bulk supply chains, industrial quality standards, and reliable international logistics."
+        },
+        "contactInfo": {
+            "email": "trade@bewingo.com",
+            "phone": "+91 7012 228 978",
+            "whatsapp": "+91 7012 228 978",
+            "address": "6/345 Export Road, Kochi Port, Kerala, India"
+        },
+        "socialLinks": {
+            "instagram": "https://instagram.com/bewingo",
+            "facebook": "https://facebook.com/bewingo",
+            "twitter": "https://twitter.com/bewingo",
+            "linkedin": "https://linkedin.com/company/bewingo"
+        }
+    }
+}

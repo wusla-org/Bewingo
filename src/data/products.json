@@ -1,0 +1,46 @@
+[
+    {
+        "id": "PRD-101",
+        "name": "Black Pepper Corn",
+        "category": "Spices",
+        "origin": "Wayanad, Kerala",
+        "grade": "TGSEB / FAQ",
+        "moq": "500 kg",
+        "packing": "25 kg, 50 kg bags",
+        "enquiryCount": 14,
+        "status": "Published"
+    },
+    {
+        "id": "PRD-102",
+        "name": "Cardamom Premium 8mm",
+        "category": "Spices",
+        "origin": "Idukki, Kerala",
+        "grade": "8mm Bold",
+        "moq": "100 kg",
+        "packing": "10 kg, 25 kg bags",
+        "enquiryCount": 9,
+        "status": "Published"
+    },
+    {
+        "id": "PRD-103",
+        "name": "Wild Forest Honey",
+        "category": "Honey",
+        "origin": "Silent Valley, Kerala",
+        "grade": "Raw / Unfiltered",
+        "moq": "200 kg",
+        "packing": "250 ml, 500 ml, 5 L drums",
+        "enquiryCount": 6,
+        "status": "Published"
+    },
+    {
+        "id": "PRD-104",
+        "name": "Cashew W180",
+        "category": "Dry Fruits",
+        "origin": "Kannur, Kerala",
+        "grade": "W180 (Jumbo)",
+        "moq": "1 MT",
+        "packing": "10 kg, 25 kg vacuum packs",
+        "enquiryCount": 3,
+        "status": "Draft"
+    }
+]

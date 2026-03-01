@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 
@@ -6,7 +9,28 @@ export const metadata = {
     description: "Contact BEWINGO for product inquiries, sourcing support, and bulk orders.",
 };
 
+import { initialSiteContent } from "@/lib/admin-data";
+
 export default function ContactPage() {
+    const [content, setContent] = useState<any>(initialSiteContent);
+
+    useEffect(() => {
+        async function fetchContent() {
+            try {
+                const res = await fetch('/api/admin/content');
+                if (res.ok) {
+                    const data = await res.json();
+                    setContent(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch site content:", error);
+            }
+        }
+        fetchContent();
+    }, []);
+
+    const { contactInfo } = content.global;
+
     return (
         <>
             <main className="pt-20 bg-cream min-h-screen">
@@ -34,18 +58,17 @@ export default function ContactPage() {
                                 <div className="space-y-4">
                                     <div>
                                         <p className="text-[10px] uppercase tracking-widest text-muted font-bold mb-1">Global Trade Desk</p>
-                                        <p className="text-forest font-bold text-lg">+91 7012 228 978</p>
+                                        <p className="text-forest font-bold text-lg">{contactInfo.phone}</p>
                                     </div>
                                     <div>
                                         <p className="text-[10px] uppercase tracking-widest text-muted font-bold mb-1">Inquiry Email</p>
-                                        <p className="text-forest font-bold text-lg">hello@bewingo.com</p>
+                                        <p className="text-forest font-bold text-lg">{contactInfo.email}</p>
                                     </div>
                                 </div>
                             </div>
                             <div className="pt-8 border-t border-forest/5">
                                 <h3 className="text-gold text-[10px] font-black uppercase tracking-[0.3em] mb-4">Export Office</h3>
-                                <p className="text-forest font-bold">Kerala, India</p>
-                                <p className="text-muted text-xs mt-2 leading-relaxed">Proximity to Kochi International Port & ICTT Vallarpadam.</p>
+                                <p className="text-forest font-bold">{contactInfo.address}</p>
                             </div>
                         </div>
 

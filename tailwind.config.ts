@@ -15,6 +15,10 @@ const config: Config = {
                 earth: "#4a3b2b",
                 dark: "#1a1a1a",
                 muted: "#8c8c8c",
+                forest: "#1a2f23",
+                gold: "#c5a059",
+                sage: "#4f6d5a",
+                emerald: "#2a4d3a",
             },
             fontFamily: {
                 playfair: ["var(--font-playfair)", "serif"],

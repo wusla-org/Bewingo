@@ -12,15 +12,18 @@ export default function SourcingPage() {
     const [content, setContent] = useState(initialSiteContent.sourcing);
 
     useEffect(() => {
-        const saved = localStorage.getItem("bewingo_site_content");
-        if (saved) {
+        async function fetchContent() {
             try {
-                const parsed = JSON.parse(saved);
-                if (parsed.sourcing) setContent(parsed.sourcing);
-            } catch (e) {
-                console.error("Failed to parse saved site content", e);
+                const res = await fetch('/api/admin/content');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.sourcing) setContent(data.sourcing);
+                }
+            } catch (error) {
+                console.error("Failed to fetch site content:", error);
             }
         }
+        fetchContent();
     }, []);
 
     return (

@@ -1,32 +1,101 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { adminProducts } from "@/lib/admin-data";
+import { useEffect, useState, useRef } from "react";
+import { AdminProduct } from "@/lib/admin-data";
+import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 
 export default function ProductManager() {
-    const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-
-    const publishedCount = useMemo(() => adminProducts.filter((p) => p.status === "Published").length, []);
-    const draftCount = useMemo(() => adminProducts.filter((p) => p.status === "Draft").length, []);
-
-    function handleImageUpload(files: FileList | null) {
-        if (!files) return;
-        const previews = Array.from(files).map((file) => URL.createObjectURL(file));
-        setUploadedImages((prev) => [...prev, ...previews]);
-    }
-
-    function removeImage(idx: number) {
-        setUploadedImages((prev) => {
-            URL.revokeObjectURL(prev[idx]);
-            return prev.filter((_, i) => i !== idx);
-        });
-    }
+    const [products, setProducts] = useState<AdminProduct[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [uploading, setUploading] = useState(false);
+    const [formData, setFormData] = useState<Partial<AdminProduct>>({
+        status: "Published"
+    });
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        return () => {
-            uploadedImages.forEach((url) => URL.revokeObjectURL(url));
-        };
-    }, [uploadedImages]);
+        fetchProducts();
+    }, []);
+
+    async function fetchProducts() {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/admin/products');
+            const data = await res.json();
+            setProducts(data);
+        } catch (error) {
+            console.error("Failed to fetch products:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        const form = new FormData();
+        form.append('file', file);
+
+        try {
+            const res = await fetch('/api/admin/upload', {
+                method: 'POST',
+                body: form,
+            });
+            const data = await res.json();
+            if (data.url) {
+                setFormData(prev => ({ ...prev, image: data.url }));
+            }
+        } catch (error) {
+            console.error("Upload failed:", error);
+        } finally {
+            setUploading(false);
+        }
+    }
+
+    async function handleSave(e: React.FormEvent) {
+        e.preventDefault();
+        const method = formData.id ? 'PUT' : 'POST';
+        try {
+            // If new product, generate a simple ID if not present
+            const payload = { ...formData };
+            if (!payload.id) {
+                payload.id = `prod_${Math.random().toString(36).substring(2, 9)}`;
+            }
+
+            const res = await fetch('/api/admin/products', {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            if (res.ok) {
+                setFormData({ status: "Published" });
+                fetchProducts();
+            }
+        } catch (error) {
+            console.error("Failed to save product:", error);
+        }
+    }
+
+    async function handleDelete(id: string) {
+        if (!confirm("Are you sure you want to delete this product?")) return;
+        try {
+            const res = await fetch(`/api/admin/products?id=${id}`, {
+                method: 'DELETE',
+            });
+            if (res.ok) {
+                fetchProducts();
+            }
+        } catch (error) {
+            console.error("Failed to delete product:", error);
+        }
+    }
+
+    const publishedCount = products.filter((p) => p.status === "Published").length;
+    const draftCount = products.filter((p) => p.status === "Draft").length;
+
+    if (loading) return <div className="p-8 text-center text-muted">Loading products...</div>;
 
     return (
         <div className="space-y-6">
@@ -34,7 +103,7 @@ export default function ProductManager() {
             <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <article className="bg-white border border-forest/10 rounded-xl p-4">
                     <p className="text-xs uppercase tracking-widest text-muted">Total Products</p>
-                    <p className="text-2xl font-bold text-forest mt-1">{adminProducts.length}</p>
+                    <p className="text-2xl font-bold text-forest mt-1">{products.length}</p>
                 </article>
                 <article className="bg-white border border-forest/10 rounded-xl p-4">
                     <p className="text-xs uppercase tracking-widest text-muted">Published</p>
@@ -48,40 +117,53 @@ export default function ProductManager() {
 
             {/* Product List */}
             <section className="bg-white border border-forest/10 rounded-xl overflow-hidden">
-                <div className="px-5 py-4 border-b border-forest/10">
+                <div className="px-5 py-4 border-b border-forest/10 flex justify-between items-center">
                     <h3 className="text-base font-semibold text-forest">Product List</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead className="bg-cream/60 text-muted">
                             <tr>
-                                <th className="text-left font-semibold px-5 py-3">ID</th>
-                                <th className="text-left font-semibold px-5 py-3">Name</th>
+                                <th className="text-left font-semibold px-5 py-3">Product</th>
                                 <th className="text-left font-semibold px-5 py-3">Category</th>
                                 <th className="text-left font-semibold px-5 py-3">Origin</th>
-                                <th className="text-left font-semibold px-5 py-3">Grade</th>
-                                <th className="text-left font-semibold px-5 py-3">MOQ</th>
-                                <th className="text-left font-semibold px-5 py-3">Enquiries</th>
+                                <th className="text-left font-semibold px-5 py-3">Quality</th>
                                 <th className="text-left font-semibold px-5 py-3">Status</th>
+                                <th className="text-left font-semibold px-5 py-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {adminProducts.map((product) => (
-                                <tr key={product.id} className="border-t border-forest/10">
-                                    <td className="px-5 py-3 font-medium text-forest">{product.id}</td>
-                                    <td className="px-5 py-3">{product.name}</td>
-                                    <td className="px-5 py-3">{product.category}</td>
-                                    <td className="px-5 py-3">{product.origin}</td>
-                                    <td className="px-5 py-3">{product.grade}</td>
-                                    <td className="px-5 py-3">{product.moq}</td>
-                                    <td className="px-5 py-3">{product.enquiryCount}</td>
+                            {products.map((product) => (
+                                <tr key={product.id} className="border-t border-forest/10 hover:bg-cream/20 transition-colors">
                                     <td className="px-5 py-3">
-                                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${product.status === "Published"
-                                                ? "bg-sage/20 text-sage"
-                                                : "bg-forest/10 text-muted"
+                                        <div className="flex items-center gap-3">
+                                            {product.image ? (
+                                                <img src={product.image} className="w-10 h-10 rounded-lg object-cover border border-forest/5" alt={product.name} />
+                                            ) : (
+                                                <div className="w-10 h-10 rounded-lg bg-forest/5 flex items-center justify-center">
+                                                    <ImageIcon className="w-5 h-5 text-muted" />
+                                                </div>
+                                            )}
+                                            <div>
+                                                <p className="font-bold text-forest">{product.name}</p>
+                                                <p className="text-[10px] text-muted font-mono">{product.id}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-5 py-3 text-muted">{product.category}</td>
+                                    <td className="px-5 py-3 text-muted">{product.origin}</td>
+                                    <td className="px-5 py-3 font-medium text-forest">{product.grade}</td>
+                                    <td className="px-5 py-3">
+                                        <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${product.status === "Published"
+                                            ? "bg-emerald/10 text-emerald"
+                                            : "bg-forest/5 text-muted"
                                             }`}>
                                             {product.status}
                                         </span>
+                                    </td>
+                                    <td className="px-5 py-3 flex gap-2">
+                                        <button onClick={() => setFormData(product)} className="text-forest hover:text-gold font-bold transition-colors">Edit</button>
+                                        <button onClick={() => handleDelete(product.id)} className="text-red-800 hover:text-red-900 font-bold transition-colors">Delete</button>
                                     </td>
                                 </tr>
                             ))}
@@ -91,101 +173,163 @@ export default function ProductManager() {
             </section>
 
             {/* Add / Edit Product Form */}
-            <section className="bg-white border border-forest/10 rounded-xl p-5">
-                <h3 className="text-base font-semibold text-forest mb-4">Add / Edit Product</h3>
-                <form className="space-y-4">
-                    {/* Row 1: Name + Category */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                            <label className="text-xs font-semibold uppercase tracking-widest text-muted">Product Name</label>
-                            <input className="w-full border border-forest/15 rounded-lg px-4 py-3 text-sm outline-none focus:border-gold transition-colors" placeholder="e.g. Black Pepper Corn" />
-                        </div>
-                        <div className="space-y-1">
-                            <label className="text-xs font-semibold uppercase tracking-widest text-muted">Category</label>
-                            <select className="w-full border border-forest/15 rounded-lg px-4 py-3 text-sm outline-none focus:border-gold bg-white transition-colors text-forest/80">
-                                <option value="">— Select Category —</option>
-                                <option>Signature Spices</option>
-                                <option>Artisanal Honey</option>
-                                <option>Dry Fruits</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* Row 2: Origin + Grade */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                            <label className="text-xs font-semibold uppercase tracking-widest text-muted">Origin</label>
-                            <input className="w-full border border-forest/15 rounded-lg px-4 py-3 text-sm outline-none focus:border-gold transition-colors" placeholder="e.g. Wayanad, Kerala" />
-                        </div>
-                        <div className="space-y-1">
-                            <label className="text-xs font-semibold uppercase tracking-widest text-muted">Grade / Quality</label>
-                            <input className="w-full border border-forest/15 rounded-lg px-4 py-3 text-sm outline-none focus:border-gold transition-colors" placeholder="e.g. TGSEB / FAQ" />
-                        </div>
-                    </div>
-
-                    {/* Row 3: MOQ + Packing Options */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                            <label className="text-xs font-semibold uppercase tracking-widest text-muted">Minimum Order Quantity (MOQ)</label>
-                            <input className="w-full border border-forest/15 rounded-lg px-4 py-3 text-sm outline-none focus:border-gold transition-colors" placeholder="e.g. 500 kg" />
-                        </div>
-                        <div className="space-y-1">
-                            <label className="text-xs font-semibold uppercase tracking-widest text-muted">Packing Options</label>
-                            <input className="w-full border border-forest/15 rounded-lg px-4 py-3 text-sm outline-none focus:border-gold transition-colors" placeholder="e.g. 25 kg, 50 kg jute bags" />
-                        </div>
-                    </div>
-
-                    {/* Description */}
-                    <div className="space-y-1">
-                        <label className="text-xs font-semibold uppercase tracking-widest text-muted">Product Description</label>
-                        <textarea
-                            rows={4}
-                            className="w-full border border-forest/15 rounded-lg px-4 py-3 text-sm outline-none focus:border-gold resize-none transition-colors"
-                            placeholder="Describe the product — aroma, usage, certifications, export highlights..."
-                        />
-                    </div>
-
-                    {/* Image Upload */}
-                    <div className="rounded-lg border border-dashed border-forest/25 p-5 bg-cream/30">
-                        <p className="text-sm font-semibold text-forest mb-1">Product Images</p>
-                        <p className="text-xs text-muted mb-4">Upload one or more images (JPG / PNG / WebP). Images will be shown on the product detail page.</p>
-                        <input
-                            type="file"
-                            multiple
-                            accept="image/*"
-                            onChange={(e) => handleImageUpload(e.target.files)}
-                            className="block w-full text-sm text-muted file:mr-3 file:rounded-md file:border-0 file:bg-forest file:text-cream file:px-4 file:py-2 file:text-xs file:font-bold file:cursor-pointer hover:file:bg-sage"
-                        />
-                        {uploadedImages.length > 0 && (
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-                                {uploadedImages.map((img, idx) => (
-                                    <div key={`${img}-${idx}`} className="relative group rounded-lg border border-forest/10 overflow-hidden bg-white">
-                                        <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-28 object-cover" />
-                                        <button
-                                            type="button"
-                                            onClick={() => removeImage(idx)}
-                                            className="absolute top-1 right-1 bg-white/90 text-forest rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600"
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
-                                ))}
+            <section className="bg-white border border-forest/10 rounded-xl p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-forest mb-6 border-b border-forest/5 pb-4">
+                    {formData.id ? 'Edit Industrial Product' : 'Onboard New Product'}
+                </h3>
+                <form className="space-y-8" onSubmit={handleSave}>
+                    {/* Image Upload Area */}
+                    <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-muted">Product Imagery</label>
+                        <div className="flex items-start gap-6">
+                            <div
+                                onClick={() => fileInputRef.current?.click()}
+                                className="w-32 h-32 border-2 border-dashed border-forest/10 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-gold hover:bg-gold/5 transition-all bg-cream/30 group"
+                            >
+                                {uploading ? (
+                                    <Loader2 className="w-6 h-6 text-gold animate-spin" />
+                                ) : formData.image ? (
+                                    <img src={formData.image} className="w-full h-full object-cover rounded-2xl" alt="Preview" />
+                                ) : (
+                                    <>
+                                        <Upload className="w-6 h-6 text-muted group-hover:text-gold" />
+                                        <span className="text-[10px] font-bold text-muted group-hover:text-gold uppercase tracking-tighter">Upload</span>
+                                    </>
+                                )}
                             </div>
-                        )}
+                            <div className="flex-1 space-y-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-muted uppercase tracking-widest">Image URL (Optional)</label>
+                                    <input
+                                        value={formData.image || ''}
+                                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                                        className="w-full border border-forest/10 rounded-lg px-4 py-2.5 text-xs outline-none focus:border-gold transition-colors"
+                                        placeholder="Direct URL or upload above..."
+                                    />
+                                </div>
+                                <p className="text-[10px] text-muted leading-relaxed">
+                                    Recommended: High-resolution PNG or JPG with clean background. <br />
+                                    Maximum file size: 5MB.
+                                </p>
+                            </div>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                                className="hidden"
+                                accept="image/*"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-1">
+                            <label className="text-xs font-black uppercase tracking-widest text-muted">Product Title</label>
+                            <input
+                                required
+                                value={formData.name || ''}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                className="w-full border border-forest/15 rounded-lg px-4 py-3.5 text-sm outline-none focus:border-gold transition-colors font-bold text-forest"
+                                placeholder="e.g. Tellicherry Black Pepper"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-black uppercase tracking-widest text-muted">Category / Industry</label>
+                            <input
+                                required
+                                value={formData.category || ''}
+                                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                className="w-full border border-forest/15 rounded-lg px-4 py-3.5 text-sm outline-none focus:border-gold transition-colors"
+                                placeholder="e.g. Spices & Condiments"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-1">
+                            <label className="text-xs font-black uppercase tracking-widest text-muted">Harvest Origin</label>
+                            <input
+                                value={formData.origin || ''}
+                                onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
+                                className="w-full border border-forest/15 rounded-lg px-4 py-3.5 text-sm outline-none focus:border-gold transition-colors"
+                                placeholder="e.g. Idukki, Kerala"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-black uppercase tracking-widest text-muted">Technical Grade</label>
+                            <input
+                                value={formData.grade || ''}
+                                onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+                                className="w-full border border-forest/15 rounded-lg px-4 py-3.5 text-sm outline-none focus:border-gold transition-colors"
+                                placeholder="e.g. TGSEB 4.75mm"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-1">
+                            <label className="text-xs font-black uppercase tracking-widest text-muted">Export MOQ</label>
+                            <input
+                                value={formData.moq || ''}
+                                onChange={(e) => setFormData({ ...formData, moq: e.target.value })}
+                                className="w-full border border-forest/15 rounded-lg px-4 py-3.5 text-sm outline-none focus:border-gold transition-colors"
+                                placeholder="e.g. 5 Metric Tons"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-black uppercase tracking-widest text-muted">Standard Packing</label>
+                            <input
+                                value={formData.packing || ''}
+                                onChange={(e) => setFormData({ ...formData, packing: e.target.value })}
+                                className="w-full border border-forest/15 rounded-lg px-4 py-3.5 text-sm outline-none focus:border-gold transition-colors"
+                                placeholder="e.g. 25kg PP / Jute Bags"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="text-xs font-black uppercase tracking-widest text-muted">Product Badge / Tagline</label>
+                        <input
+                            value={formData.badge || ''}
+                            onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                            className="w-full border border-forest/15 rounded-lg px-4 py-3.5 text-sm outline-none focus:border-gold transition-colors"
+                            placeholder="e.g. High Piperine Content"
+                        />
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="text-xs font-black uppercase tracking-widest text-muted">Specification Summary</label>
+                        <textarea
+                            rows={3}
+                            value={formData.description || ''}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            className="w-full border border-forest/15 rounded-lg px-4 py-3.5 text-sm outline-none focus:border-gold transition-colors resize-none"
+                            placeholder="Detailed technical specs for buyers..."
+                        />
                     </div>
 
                     {/* Status + Actions */}
-                    <div className="flex flex-wrap items-center gap-3">
-                        <select className="border border-forest/15 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-gold bg-white text-forest/80">
-                            <option>Status: Published</option>
-                            <option>Status: Draft</option>
+                    <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-forest/5">
+                        <select
+                            value={formData.status}
+                            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                            className="border border-forest/10 rounded-xl px-4 py-3 text-xs font-black uppercase tracking-widest outline-none focus:border-gold bg-cream/30 text-forest/80 cursor-pointer"
+                        >
+                            <option value="Published">Status: Published</option>
+                            <option value="Draft">Status: Draft</option>
                         </select>
-                        <button type="button" className="bg-forest text-cream text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-emerald transition-colors">
-                            Save Product
+                        <button type="submit" className="bg-forest text-cream text-[11px] font-black uppercase tracking-[0.2em] px-8 py-3.5 rounded-xl hover:bg-emerald transition-all shadow-lg active:scale-95">
+                            {formData.id ? 'Save Changes' : 'Publish Product'}
                         </button>
-                        <button type="button" className="border border-forest/20 text-forest text-sm font-semibold px-5 py-2.5 rounded-lg hover:border-gold hover:text-gold transition-colors">
-                            Save as Draft
-                        </button>
+                        {formData.id && (
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ status: "Published" })}
+                                className="border border-forest/20 text-forest text-[11px] font-black uppercase tracking-[0.2em] px-8 py-3.5 rounded-xl hover:border-gold hover:text-gold transition-all"
+                            >
+                                Cancel
+                            </button>
+                        )}
                     </div>
                 </form>
             </section>

@@ -1,0 +1,41 @@
+[
+    {
+        "id": "INQ-501",
+        "name": "Daniel George",
+        "company": "DG Imports",
+        "email": "daniel@dgimports.com",
+        "country": "United Arab Emirates",
+        "phone": "+971 50 123 4567",
+        "volume": "5 MT",
+        "port": "Jebel Ali",
+        "incoterms": "CIF",
+        "message": "Need bulk quote for black pepper and cardamom.",
+        "date": "2026-02-19",
+        "status": "New"
+    },
+    {
+        "id": "INQ-500",
+        "name": "Riya Sharma",
+        "company": "Riya Naturals",
+        "email": "riya@riyanaturals.in",
+        "country": "India",
+        "phone": "+91 98765 43210",
+        "message": "Looking for private label options for spice gift boxes.",
+        "date": "2026-02-18",
+        "status": "Replied"
+    },
+    {
+        "id": "INQ-499",
+        "name": "Ahmed Al Farsi",
+        "company": "Gulf Foods Trading",
+        "email": "ahmed@gulffoods.ae",
+        "country": "Oman",
+        "phone": "+968 9123 4567",
+        "volume": "10 MT",
+        "port": "Sohar",
+        "incoterms": "FOB",
+        "message": "Interested in cardamom and honey for bulk export.",
+        "date": "2026-02-17",
+        "status": "New"
+    }
+]

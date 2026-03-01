@@ -12,15 +12,18 @@ export default function OurStoryPage() {
     const [content, setContent] = useState(initialSiteContent.story);
 
     useEffect(() => {
-        const saved = localStorage.getItem("bewingo_site_content");
-        if (saved) {
+        async function fetchContent() {
             try {
-                const parsed = JSON.parse(saved);
-                if (parsed.story) setContent(parsed.story);
-            } catch (e) {
-                console.error("Failed to parse saved site content", e);
+                const res = await fetch('/api/admin/content');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.story) setContent(data.story);
+                }
+            } catch (error) {
+                console.error("Failed to fetch site content:", error);
             }
         }
+        fetchContent();
     }, []);
 
     return (

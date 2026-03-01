@@ -13,15 +13,18 @@ export default function HomePage() {
     const [content, setContent] = useState(initialSiteContent);
 
     useEffect(() => {
-        const saved = localStorage.getItem("bewingo_site_content");
-        if (saved) {
+        async function fetchContent() {
             try {
-                const parsed = JSON.parse(saved);
-                setContent(parsed);
-            } catch (e) {
-                console.error("Failed to parse saved site content", e);
+                const res = await fetch('/api/admin/content');
+                if (res.ok) {
+                    const data = await res.json();
+                    setContent(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch site content:", error);
             }
         }
+        fetchContent();
     }, []);
 
     const home = content.home;

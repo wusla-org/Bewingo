@@ -7,19 +7,24 @@ import { Leaf, Instagram, Facebook, Twitter, Mail, Phone, MapPin } from "lucide-
 import { initialSiteContent } from "@/lib/admin-data";
 
 export default function Footer() {
-    const [desc, setDesc] = useState(initialSiteContent.global.footer.companyDesc);
+    const [content, setContent] = useState<any>(initialSiteContent);
 
     useEffect(() => {
-        const saved = localStorage.getItem("bewingo_site_content");
-        if (saved) {
+        async function fetchContent() {
             try {
-                const parsed = JSON.parse(saved);
-                if (parsed.global?.footer?.companyDesc) setDesc(parsed.global.footer.companyDesc);
-            } catch (e) {
-                console.error("Failed to parse saved site content", e);
+                const res = await fetch('/api/admin/content');
+                if (res.ok) {
+                    const data = await res.json();
+                    setContent(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch site content:", error);
             }
         }
+        fetchContent();
     }, []);
+
+    const { contactInfo, socialLinks, footer } = content.global;
     return (
         <footer className="bg-earth text-cream">
             <div className="max-w-6xl mx-auto px-6 py-20">
@@ -45,19 +50,19 @@ export default function Footer() {
                             <li className="flex items-start gap-4">
                                 <MapPin className="w-5 h-5 text-tan shrink-0" />
                                 <span className="text-xs font-medium text-cream/50 uppercase tracking-widest leading-relaxed">
-                                    6/345 Export Road, Kochi Port,<br />Kerala, India
+                                    {contactInfo.address}
                                 </span>
                             </li>
                             <li className="flex items-center gap-4">
                                 <Phone className="w-5 h-5 text-tan shrink-0" />
                                 <span className="text-xs font-medium text-cream/50 uppercase tracking-widest">
-                                    +91 7012 228 978
+                                    {contactInfo.phone}
                                 </span>
                             </li>
                             <li className="flex items-center gap-4">
                                 <Mail className="w-5 h-5 text-tan shrink-0" />
                                 <span className="text-xs font-medium text-cream/50 uppercase tracking-widest">
-                                    trade@bewingo.com
+                                    {contactInfo.email}
                                 </span>
                             </li>
                         </ul>
@@ -67,15 +72,17 @@ export default function Footer() {
                     <div className="flex flex-col items-start md:items-end">
                         <h4 className="text-sm font-black uppercase tracking-[0.2em] mb-8 text-tan">Follow Us</h4>
                         <div className="flex gap-4">
-                            {[Instagram, Facebook].map((Icon, i) => (
-                                <a
-                                    key={i}
-                                    href="#"
-                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-cream/5 text-tan hover:bg-tan hover:text-earth transition-all border border-cream/10"
-                                >
-                                    <Icon className="w-5 h-5" />
+                            <a href={socialLinks.instagram} className="w-10 h-10 flex items-center justify-center rounded-full bg-cream/5 text-tan hover:bg-tan hover:text-earth transition-all border border-cream/10">
+                                <Instagram className="w-5 h-5" />
+                            </a>
+                            <a href={socialLinks.facebook} className="w-10 h-10 flex items-center justify-center rounded-full bg-cream/5 text-tan hover:bg-tan hover:text-earth transition-all border border-cream/10">
+                                <Facebook className="w-5 h-5" />
+                            </a>
+                            {socialLinks.twitter && (
+                                <a href={socialLinks.twitter} className="w-10 h-10 flex items-center justify-center rounded-full bg-cream/5 text-tan hover:bg-tan hover:text-earth transition-all border border-cream/10">
+                                    <Twitter className="w-5 h-5" />
                                 </a>
-                            ))}
+                            )}
                         </div>
                         <div className="mt-8">
                             <div className="opacity-80">

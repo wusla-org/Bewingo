@@ -5,19 +5,19 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface ProductCardProps {
-    id: number;
-    title: string;
-    description: string;
+    id: string;
+    name: string;
+    description?: string;
     origin?: string;
     grade?: string;
     moq?: string;
-    image: string;
+    image?: string;
     badge?: string;
 }
 
 export default function ProductCard({
     id,
-    title,
+    name,
     description,
     origin,
     grade,
@@ -39,8 +39,8 @@ export default function ProductCard({
                     </span>
                 )}
                 <img
-                    src={image}
-                    alt={title}
+                    src={image || "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=500"}
+                    alt={name}
                     className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
                 />
             </div>
@@ -49,7 +49,7 @@ export default function ProductCard({
             <div className="p-5 flex-1 flex flex-col">
                 <div className="mb-4">
                     <h3 className="text-xl font-bold text-forest leading-snug mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
-                        {title}
+                        {name}
                     </h3>
                     <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted">{description}</p>
                 </div>

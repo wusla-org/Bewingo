@@ -7,6 +7,7 @@ export type AdminMetric = {
 export type AdminProduct = {
     id: string;
     name: string;
+    description?: string;
     category: string;
     origin: string;
     grade: string;
@@ -15,6 +16,7 @@ export type AdminProduct = {
     enquiryCount: number;
     status: "Published" | "Draft";
     image?: string;
+    badge?: string;
 };
 
 export type AdminInquiry = {
@@ -92,6 +94,18 @@ export type SourcingContent = {
 export type GlobalContent = {
     footer: {
         companyDesc: string;
+    };
+    contactInfo: {
+        email: string;
+        phone: string;
+        whatsapp: string;
+        address: string;
+    };
+    socialLinks: {
+        instagram: string;
+        facebook: string;
+        twitter: string;
+        linkedin: string;
     };
 };
 
@@ -275,6 +289,18 @@ export const initialSiteContent: SiteContent = {
     global: {
         footer: {
             companyDesc: "Exporting premium Kerala agro-products to global markets. We specialize in bulk supply chains, industrial quality standards, and reliable international logistics.",
+        },
+        contactInfo: {
+            email: "trade@bewingo.com",
+            phone: "+91 7012 228 978",
+            whatsapp: "+91 7012 228 978",
+            address: "6/345 Export Road, Kochi Port, Kerala, India",
+        },
+        socialLinks: {
+            instagram: "https://instagram.com/bewingo",
+            facebook: "https://facebook.com/bewingo",
+            twitter: "https://twitter.com/bewingo",
+            linkedin: "https://linkedin.com/company/bewingo",
         },
     },
 };
